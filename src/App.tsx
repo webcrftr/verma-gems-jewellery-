@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import { 
   Diamond, 
   Gem, 
@@ -475,6 +475,39 @@ const B2BPortal = ({ onNavigate }: { onNavigate: (page: string) => void }) => {
 };
 
 const ContactArea = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    interest: 'Precious Stones',
+    message: ''
+  });
+
+  const handleFormSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.name.trim() || !formData.message.trim()) {
+      alert("Please provide your name and a brief message regarding your requirements.");
+      return;
+    }
+
+    const message = `Hello Varma Gems & Jewellery ✨
+
+My name is ${formData.name}.
+
+I am interested in your *${formData.interest}* collection.
+
+Here are my requirements:
+${formData.message}
+
+Kindly share more details, pricing, and availability.
+
+Thank you 😊`;
+
+    const encodedMsg = encodeURIComponent(message);
+    
+    const whatsappUrl = `https://wa.me/${CONTACT_INFO.whatsapp}?text=${encodedMsg}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
   return (
     <section id="contact" className="py-32 relative">
       <div className="container mx-auto px-12">
@@ -512,15 +545,26 @@ const ContactArea = () => {
           </div>
 
           <div className="lg:w-2/3">
-            <form className="p-12 glass-card space-y-10" onSubmit={(e) => e.preventDefault()}>
+            <form className="p-12 glass-card space-y-10" onSubmit={handleFormSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                 <div className="space-y-4">
                   <label className="text-[10px] uppercase tracking-[0.2em] font-bold text-white/50">Your Name</label>
-                  <input type="text" className="w-full bg-transparent border-b border-white/20 py-3 focus:outline-none focus:border-brand-gold transition-colors text-white font-light" placeholder="e.g. Rahul Varma" />
+                  <input 
+                    type="text" 
+                    value={formData.name}
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    className="w-full bg-transparent border-b border-white/20 py-3 focus:outline-none focus:border-brand-gold transition-colors text-white font-light" 
+                    placeholder="e.g. Rahul Varma" 
+                    required
+                  />
                 </div>
                 <div className="space-y-4">
                   <label className="text-[10px] uppercase tracking-[0.2em] font-bold text-white/50">Interest</label>
-                  <select className="w-full bg-transparent border-b border-white/20 py-3 focus:outline-none focus:border-brand-gold transition-colors text-white/80 font-light outline-none">
+                  <select 
+                    value={formData.interest}
+                    onChange={(e) => setFormData({...formData, interest: e.target.value})}
+                    className="w-full bg-transparent border-b border-white/20 py-3 focus:outline-none focus:border-brand-gold transition-colors text-white/80 font-light outline-none"
+                  >
                     <option className="bg-brand-navy">Precious Stones</option>
                     <option className="bg-brand-navy">Semi-Precious Stones</option>
                     <option className="bg-brand-navy">Custom Jewellery</option>
@@ -530,9 +574,19 @@ const ContactArea = () => {
               </div>
               <div className="space-y-4">
                   <label className="text-[10px] uppercase tracking-[0.2em] font-bold text-white/50">Message</label>
-                  <textarea rows={3} className="w-full bg-transparent border-b border-white/20 py-3 focus:outline-none focus:border-brand-gold transition-colors text-white font-light resize-none" placeholder="Share your specific gemstone requirements..." />
+                  <textarea 
+                    rows={3} 
+                    value={formData.message}
+                    onChange={(e) => setFormData({...formData, message: e.target.value})}
+                    className="w-full bg-transparent border-b border-white/20 py-3 focus:outline-none focus:border-brand-gold transition-colors text-white font-light resize-none" 
+                    placeholder="Share your specific gemstone requirements..." 
+                    required
+                  />
               </div>
-              <button className="w-full bg-white/5 border border-brand-gold/30 text-brand-gold py-5 uppercase tracking-[0.3em] text-[11px] font-bold hover:bg-brand-gold hover:text-brand-navy transition-all">
+              <button 
+                type="submit"
+                className="w-full bg-white/5 border border-brand-gold/30 text-brand-gold py-5 uppercase tracking-[0.3em] text-[11px] font-bold hover:bg-brand-gold hover:text-brand-navy transition-all active:scale-[0.98]"
+              >
                 Send Digital Request
               </button>
             </form>
