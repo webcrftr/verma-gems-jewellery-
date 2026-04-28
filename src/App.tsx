@@ -105,19 +105,28 @@ const Navbar = ({ activePage, onPageChange }: { activePage: string, onPageChange
   const handleLinkClick = (id: string) => {
     onPageChange(id);
     setIsMobileMenuOpen(false);
+    document.body.style.overflow = 'unset';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [isMobileMenuOpen]);
+
   return (
     <nav 
-      className={`fixed top-0 left-0 w-full z-[101] transition-all duration-700 border-b border-white/5 ${
-        isScrolled ? "bg-brand-navy/90 backdrop-blur-xl py-4 shadow-2xl" : "bg-transparent py-8"
+      className={`fixed top-0 left-0 w-full z-[100] transition-all duration-700 border-b border-white/5 ${
+        isScrolled ? "bg-brand-navy/95 backdrop-blur-xl py-4 shadow-2xl" : "bg-transparent py-8"
       }`}
     >
       <div className="container mx-auto px-6 lg:px-12 flex justify-between items-center">
         <button onClick={() => handleLinkClick('home')} className="flex flex-col group text-left">
-          <span className="text-2xl font-serif tracking-[0.2em] text-brand-gold leading-none uppercase group-hover:text-white transition-colors">Varma</span>
-          <span className="text-[10px] tracking-[0.4em] uppercase opacity-60 mt-1">Gems & Jewellery</span>
+          <span className="text-xl lg:text-2xl font-serif tracking-[0.2em] text-brand-gold leading-none uppercase group-hover:text-white transition-colors">Varma</span>
+          <span className="text-[9px] lg:text-[10px] tracking-[0.4em] uppercase opacity-60 mt-1">Gems & Jewellery</span>
         </button>
 
         {/* Desktop Nav */}
@@ -145,79 +154,62 @@ const Navbar = ({ activePage, onPageChange }: { activePage: string, onPageChange
 
         {/* Mobile Toggle */}
         <button 
-          className="lg:hidden text-white p-2"
+          className="lg:hidden text-white p-2 relative z-[110]"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
           {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
       </div>
 
-      {/* Mobile Menu Backdrop */}
+      {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <>
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="fixed inset-0 bg-black/60 backdrop-blur-md z-[101] lg:hidden"
-            />
-            <motion.div
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="fixed inset-y-0 right-0 w-[85%] max-w-sm bg-brand-navy z-[102] lg:hidden flex flex-col p-10 shadow-2xl"
-            >
-              <div className="flex justify-between items-center mb-16">
-                <div className="flex flex-col">
-                  <span className="text-xl font-serif tracking-[0.2em] text-brand-gold leading-none uppercase">Varma</span>
-                  <span className="text-[9px] tracking-[0.3em] uppercase opacity-50 mt-1">Heritage Artisans</span>
-                </div>
-                <button 
-                  className="text-white p-2 hover:bg-white/5 rounded-full transition-colors"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <X size={24} />
-                </button>
-              </div>
-
-              <div className="flex flex-col space-y-6">
-                {navLinks.map((link, i) => (
-                  <motion.button
-                    key={link.id}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 + i * 0.05 }}
-                    onClick={() => handleLinkClick(link.id)}
-                    className={`text-2xl uppercase tracking-widest text-left font-serif py-2 border-l-2 pl-6 transition-all ${
-                      activePage === link.id ? "text-brand-gold border-brand-gold" : "text-white/60 border-transparent hover:text-white"
-                    }`}
-                  >
-                    {link.name}
-                  </motion.button>
-                ))}
-              </div>
-
-              <div className="mt-auto pt-10">
-                <motion.a 
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.4, ease: "circOut" }}
+            className="fixed inset-0 bg-[#0b1c2c] z-[105] lg:hidden flex flex-col items-center justify-center p-8 overflow-hidden"
+          >
+            <div className="flex flex-col items-center space-y-10 w-full">
+              {navLinks.map((link, i) => (
+                <motion.button
+                  key={link.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
+                  transition={{ delay: i * 0.1 }}
+                  onClick={() => handleLinkClick(link.id)}
+                  className={`text-3xl uppercase tracking-[0.2em] font-serif transition-all ${
+                    activePage === link.id ? "text-brand-gold scale-110" : "text-white/60 hover:text-white"
+                  }`}
+                >
+                  {link.name}
+                </motion.button>
+              ))}
+              
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="pt-10 w-full max-w-xs"
+              >
+                <a 
                   href={`https://wa.me/${CONTACT_INFO.whatsapp}?text=${WHATSAPP_APPOINTMENT_MSG}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full bg-brand-gold text-brand-navy py-5 text-sm font-bold uppercase tracking-[0.2em] text-center block shadow-xl hover:bg-white transition-all transform active:scale-95"
+                  className="w-full bg-brand-gold text-brand-navy py-5 text-sm font-bold uppercase tracking-[0.2em] text-center block shadow-2xl active:scale-95 transition-all"
                 >
                   Book Appointment
-                </motion.a>
-                <p className="text-center text-[10px] uppercase tracking-widest text-white/30 mt-6 font-bold">
-                  Zaveri Bazaar, Mumbai
-                </p>
-              </div>
-            </motion.div>
-          </>
+                </a>
+              </motion.div>
+            </div>
+
+            <div className="absolute bottom-12 text-center">
+              <p className="text-[10px] uppercase tracking-[0.4em] text-white/20 font-bold">
+                Mumbai • Zaveri Bazaar
+              </p>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </nav>
@@ -369,49 +361,48 @@ const CollectionsSection = ({ onNavigate }: { onNavigate: (page: string) => void
 
 const HeritageSection = ({ onNavigate }: { onNavigate: (page: string) => void }) => {
   return (
-    <section id="heritage" className="py-32 bg-white/5 border-y border-white/5 overflow-hidden">
-      <div className="container mx-auto px-6 lg:px-12 flex flex-col lg:flex-row items-center gap-24">
-        <div className="lg:w-1/2 relative">
+    <section id="heritage" className="py-20 lg:py-32 bg-white/5 border-y border-white/5 overflow-hidden">
+      <div className="container mx-auto px-6 lg:px-12 flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+        <div className="w-full lg:w-1/2 relative">
           <div className="relative z-10 border border-brand-gold/20 p-2">
             <img 
               src={IMAGES.heritage} 
               alt="Zaveri Bazaar Mastery" 
-              className="w-full h-[600px] object-cover opacity-80"
+              className="w-full h-[400px] lg:h-[600px] object-cover opacity-80"
               referrerPolicy="no-referrer"
             />
           </div>
-          {/* Accent Element */}
-          <div className="absolute -top-12 -left-12 w-64 h-64 border border-brand-gold/10 hidden lg:block pointer-events-none" />
-          <div className="absolute bottom-12 -right-12 px-8 py-10 glass-card z-20 pointer-events-none">
-            <span className="block text-4xl font-serif text-brand-gold mb-2">Since 1974</span>
-            <span className="text-[11px] uppercase tracking-[0.3em] opacity-60">Mumbai's Artisanal Hub</span>
+          <div className="absolute -top-6 lg:-top-12 -left-6 lg:-left-12 w-32 lg:w-64 h-32 lg:h-64 border border-brand-gold/10 hidden md:block pointer-events-none" />
+          <div className="absolute -bottom-6 lg:bottom-12 -right-4 lg:-right-12 px-6 lg:px-8 py-8 lg:py-10 glass-card z-20 pointer-events-none transform scale-90 lg:scale-100">
+            <span className="block text-3xl lg:text-4xl font-serif text-brand-gold mb-2">Since 1974</span>
+            <span className="text-[9px] lg:text-[11px] uppercase tracking-[0.3em] opacity-60">Mumbai's Artisanal Hub</span>
           </div>
         </div>
-
-        <div className="lg:w-1/2">
+        
+        <div className="w-full lg:w-1/2 text-center lg:text-left">
           <span className="text-brand-gold text-xs tracking-[0.5em] uppercase mb-6 block">Our Heritage Story</span>
-          <h2 className="text-5xl md:text-6xl mb-10 leading-tight">Mastery in Every Cut.</h2>
-          <p className="text-white/60 leading-relaxed mb-8 font-light text-lg">
+          <h2 className="text-4xl lg:text-5xl font-serif text-white mb-8 leading-tight">Mastery in Every Cut.</h2>
+          <p className="text-white/60 mb-8 leading-relaxed font-light text-base lg:text-lg">
             Located in the legendary Zaveri Bazaar, Varma Gems & Jewellery is more than a name—it's a testament to decades of industrial manufacturing and meticulous retailing.
           </p>
-          <p className="text-white/40 leading-relaxed mb-12 font-light">
+          <p className="text-white/40 leading-relaxed mb-12 font-light text-sm lg:text-base">
             Our workshop specializes in high-contrast gemstone detailing and premium diamond setting, providing unparalleled brilliance in every custom design. We honor the heritage while building the future of jewellery.
           </p>
           
-          <div className="grid grid-cols-2 gap-10 mb-12">
-            <div className="flex flex-col gap-3">
-              <span className="text-4xl font-serif text-brand-gold opacity-80">9k+</span>
-              <p className="text-[10px] uppercase tracking-widest opacity-50">Custom Pieces Created</p>
+          <div className="grid grid-cols-2 gap-8 lg:gap-10 mb-12">
+            <div className="flex flex-col gap-2">
+              <span className="text-3xl lg:text-4xl font-serif text-brand-gold opacity-80">9k+</span>
+              <p className="text-[9px] lg:text-[10px] uppercase tracking-widest opacity-50">Custom Pieces Created</p>
             </div>
-            <div className="flex flex-col gap-3">
-              <span className="text-4xl font-serif text-brand-gold opacity-80">50+</span>
-              <p className="text-[10px] uppercase tracking-widest opacity-50">Global Logistics Partners</p>
+            <div className="flex flex-col gap-2">
+              <span className="text-3xl lg:text-4xl font-serif text-brand-gold opacity-80">50+</span>
+              <p className="text-[9px] lg:text-[10px] uppercase tracking-widest opacity-50">Global Logistics Partners</p>
             </div>
           </div>
 
           <button 
             onClick={() => onNavigate('heritage')}
-            className="px-10 py-4 border border-brand-gold/40 text-brand-gold text-xs font-bold uppercase tracking-widest hover:bg-brand-gold hover:text-brand-navy transition-all duration-300"
+            className="w-full lg:w-auto px-10 py-4 border border-brand-gold/40 text-brand-gold text-xs font-bold uppercase tracking-widest hover:bg-brand-gold hover:text-brand-navy transition-all duration-300"
           >
             Read Full Journey
           </button>
@@ -423,46 +414,46 @@ const HeritageSection = ({ onNavigate }: { onNavigate: (page: string) => void })
 
 const B2BPortal = ({ onNavigate }: { onNavigate: (page: string) => void }) => {
   return (
-    <section id="b2b" className="py-32 relative">
+    <section id="b2b" className="py-20 lg:py-32 relative">
       <div className="container mx-auto px-6 lg:px-12">
-        <div className="glass-card flex flex-col lg:flex-row overflow-hidden border-brand-gold/10">
-          <div className="lg:w-1/2 p-12 lg:p-24 flex flex-col justify-center">
+        <div className="glass-card flex flex-col lg:flex-row overflow-hidden border border-brand-gold/10">
+          <div className="w-full lg:w-1/2 p-8 lg:p-24 flex flex-col justify-center">
             <span className="text-brand-gold text-[10px] tracking-[0.5em] uppercase mb-8 block">Exclusive B2B Inquiries</span>
-            <h2 className="text-5xl text-white mb-8">Wholesale & Export</h2>
-            <p className="text-white/50 mb-12 font-light leading-relaxed max-w-md">
+            <h2 className="text-4xl lg:text-5xl text-white font-serif mb-8 leading-tight">Wholesale & Export</h2>
+            <p className="text-white/50 mb-12 font-light leading-relaxed max-w-md text-base lg:text-lg">
               Bulk supply of certified gemstones and jewelry directly from our manufacturing unit in Zaveri Bazaar. Access our global inventory with direct-to-manufacturer logistics.
             </p>
             
             <div className="space-y-6 mb-12">
               <div className="flex items-center text-white/80 gap-4">
-                <div className="w-10 h-10 rounded-full border border-brand-gold/30 flex items-center justify-center text-brand-gold shrink-0">✓</div>
-                <span className="text-[11px] uppercase tracking-widest font-bold">Direct Manufacturing Rates</span>
+                <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full border border-brand-gold/30 flex items-center justify-center text-brand-gold shrink-0">✓</div>
+                <span className="text-[10px] lg:text-[11px] uppercase tracking-widest font-bold">Direct Manufacturing Rates</span>
               </div>
               <div className="flex items-center text-white/80 gap-4">
-                <div className="w-10 h-10 rounded-full border border-brand-gold/30 flex items-center justify-center text-brand-gold shrink-0">✦</div>
-                <span className="text-[11px] uppercase tracking-widest font-bold">GIA & IGI Certified Inventory</span>
+                <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full border border-brand-gold/30 flex items-center justify-center text-brand-gold shrink-0">✦</div>
+                <span className="text-[10px] lg:text-[11px] uppercase tracking-widest font-bold">GIA & IGI Certified Inventory</span>
               </div>
             </div>
             
-            <div className="flex gap-4">
+            <div className="flex">
               <button 
                 onClick={() => onNavigate('wholesale')}
-                className="px-10 py-5 bg-brand-gold text-brand-navy font-bold tracking-widest uppercase hover:bg-brand-gold/90 transition-all text-xs"
+                className="w-full lg:w-auto px-10 py-5 bg-brand-gold text-brand-navy font-bold tracking-widest uppercase hover:bg-brand-gold/90 transition-all text-xs"
               >
                 Access Wholesale Portal
               </button>
             </div>
           </div>
-          <div className="lg:w-1/2 relative min-h-[500px]">
+          <div className="w-full lg:w-1/2 relative min-h-[300px] lg:min-h-[500px]">
              <img 
               src={IMAGES.b2b} 
               alt="Export Logistics" 
-              className="w-full h-full object-cover opacity-60"
+              className="w-full h-full object-cover opacity-40 lg:opacity-60"
               referrerPolicy="no-referrer"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-brand-navy to-transparent" />
-            <div className="absolute bottom-12 left-12">
-              <div className="flex flex-col uppercase tracking-[0.3em] font-serif text-2xl text-brand-gold">
+            <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-brand-navy to-transparent" />
+            <div className="absolute bottom-12 left-12 lg:bottom-12 lg:left-12">
+              <div className="flex flex-col uppercase tracking-[0.3em] font-serif text-xl lg:text-2xl text-brand-gold">
                 <span>Global</span>
                 <span>Standards</span>
               </div>
@@ -509,43 +500,44 @@ Thank you 😊`;
   };
 
   return (
-    <section id="contact" className="py-32 relative">
-      <div className="container mx-auto px-12">
-        <div className="flex flex-col lg:flex-row gap-20">
-          <div className="lg:w-1/3">
-            <h2 className="text-4xl mb-12 font-serif text-white">Contact Us</h2>
-            <div className="space-y-10">
-              <div className="flex items-start gap-6">
+    <section id="contact" className="py-20 lg:py-32 relative">
+      <div className="container mx-auto px-6 lg:px-12">
+        <div className="flex flex-col lg:flex-row gap-16 lg:gap-24">
+          <div className="w-full lg:w-1/3 text-center lg:text-left">
+            <h2 className="text-brand-gold text-xs tracking-[0.5em] uppercase mb-6 block">Direct Enquiry</h2>
+            <h3 className="text-4xl lg:text-5xl font-serif text-white mb-10 leading-tight">Contact Us</h3>
+            <div className="space-y-8 flex flex-col items-center lg:items-start">
+              <div className="flex items-start gap-6 text-left">
                 <MapPin className="w-6 h-6 text-brand-gold shrink-0 mt-1" />
                 <div>
                   <p className="text-[10px] uppercase tracking-widest text-brand-gold mb-2 font-bold">Location</p>
-                  <p className="text-white/70 font-light leading-relaxed">{CONTACT_INFO.address}</p>
+                  <p className="text-white/70 font-light leading-relaxed text-sm">{CONTACT_INFO.address}</p>
                 </div>
               </div>
-              <div className="flex items-start gap-6">
+              <div className="flex items-start gap-6 text-left">
                 <Mail className="w-6 h-6 text-brand-gold shrink-0 mt-1" />
                 <div>
                   <p className="text-[10px] uppercase tracking-widest text-brand-gold mb-2 font-bold">Inquiries</p>
-                  <p className="text-white/70 font-light">{CONTACT_INFO.email}</p>
+                  <p className="text-white/70 font-light text-sm truncate max-w-[200px] sm:max-w-none">{CONTACT_INFO.email}</p>
                 </div>
               </div>
-              <div className="flex items-start gap-6">
+              <div className="flex items-start gap-6 text-left">
                 <Phone className="w-6 h-6 text-brand-gold shrink-0 mt-1" />
                 <div>
                   <p className="text-[10px] uppercase tracking-widest text-brand-gold mb-2 font-bold">Direct Line</p>
-                  <p className="text-white/70 font-light">{CONTACT_INFO.phone}</p>
+                  <p className="text-white/70 font-light text-sm">{CONTACT_INFO.phone}</p>
                 </div>
               </div>
             </div>
             
-            <div className="mt-12 p-6 glass-card border-brand-gold/10">
+            <div className="mt-12 p-6 glass-card border border-brand-gold/10 inline-block">
               <h4 className="text-brand-gold font-serif text-lg mb-2">{CONTACT_INFO.owner}</h4>
-              <p className="text-xs text-white/40 tracking-widest uppercase">Proprietor</p>
+              <p className="text-[10px] text-white/40 tracking-widest uppercase">Proprietor</p>
             </div>
           </div>
 
-          <div className="lg:w-2/3">
-            <form className="p-12 glass-card space-y-10" onSubmit={handleFormSubmit}>
+          <div className="w-full lg:w-2/3">
+            <form className="p-8 lg:p-12 glass-card space-y-10" onSubmit={handleFormSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                 <div className="space-y-4">
                   <label className="text-[10px] uppercase tracking-[0.2em] font-bold text-white/50">Your Name</label>
@@ -553,7 +545,7 @@ Thank you 😊`;
                     type="text" 
                     value={formData.name}
                     onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    className="w-full bg-transparent border-b border-white/20 py-3 focus:outline-none focus:border-brand-gold transition-colors text-white font-light" 
+                    className="w-full bg-transparent border-b border-white/20 py-3 focus:outline-none focus:border-brand-gold transition-colors text-white font-light text-base" 
                     placeholder="e.g. Rahul Varma" 
                     required
                   />
@@ -563,7 +555,7 @@ Thank you 😊`;
                   <select 
                     value={formData.interest}
                     onChange={(e) => setFormData({...formData, interest: e.target.value})}
-                    className="w-full bg-transparent border-b border-white/20 py-3 focus:outline-none focus:border-brand-gold transition-colors text-white/80 font-light outline-none"
+                    className="w-full bg-transparent border-b border-white/20 py-3 focus:outline-none focus:border-brand-gold transition-colors text-white/80 font-light outline-none text-base"
                   >
                     <option className="bg-brand-navy">Precious Stones</option>
                     <option className="bg-brand-navy">Semi-Precious Stones</option>
@@ -578,8 +570,8 @@ Thank you 😊`;
                     rows={3} 
                     value={formData.message}
                     onChange={(e) => setFormData({...formData, message: e.target.value})}
-                    className="w-full bg-transparent border-b border-white/20 py-3 focus:outline-none focus:border-brand-gold transition-colors text-white font-light resize-none" 
-                    placeholder="Share your specific gemstone requirements..." 
+                    className="w-full bg-transparent border-b border-white/20 py-3 focus:outline-none focus:border-brand-gold transition-colors text-white font-light resize-none text-base" 
+                    placeholder="Share your requirements..." 
                     required
                   />
               </div>
