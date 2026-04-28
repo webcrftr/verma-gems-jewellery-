@@ -28,15 +28,15 @@ import { motion, AnimatePresence } from "motion/react";
 // --- Constants & Types ---
 
 const CONTACT_INFO = {
-  phone: "+91 86688 32158",
-  whatsapp: "918668832158",
+  phone: "+91 98201 60245",
+  whatsapp: "919820160245",
   email: "varmagemsandjewellery@gmail.com",
   address: "40/42, 6A Ruby Chambers, 6th Floor, Dhanji Street, Zaveri Bazar, Mumbai - 400003",
   owner: "M. G. Varma (Manoj)"
 };
 
-const WHATSAPP_APPOINTMENT_MSG = encodeURIComponent("Hello Varma Gems & Jewellery, I would like to book an appointment.");
-const WHATSAPP_GENERAL_MSG = encodeURIComponent("Hi, I am interested in your jewellery. Please share more details.");
+const WHATSAPP_APPOINTMENT_MSG = encodeURIComponent("Hello Varma Gems, I want to enquire about your products.");
+const WHATSAPP_GENERAL_MSG = encodeURIComponent("Hello Varma Gems, I want to enquire about your products.");
 
 const IMAGES = {
   hero: "https://iili.io/BidZDDN.md.jpg",
@@ -754,7 +754,7 @@ const WholesaleView = () => (
           ))}
         </div>
         <a 
-          href={`https://wa.me/${CONTACT_INFO.whatsapp}?text=Hi, I am interested in wholesale/bulk gemstone pricing. Please share your catalog.`}
+          href={`https://wa.me/${CONTACT_INFO.whatsapp}?text=${WHATSAPP_GENERAL_MSG}`}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-block px-12 py-5 bg-brand-gold text-brand-navy font-bold uppercase tracking-widest text-xs hover:scale-105 transition-all shadow-xl"
