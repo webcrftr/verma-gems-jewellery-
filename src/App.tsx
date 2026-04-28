@@ -152,44 +152,72 @@ const Navbar = ({ activePage, onPageChange }: { activePage: string, onPageChange
         </button>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Backdrop */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-0 bg-brand-navy z-[102] lg:hidden flex flex-col pt-32 p-8"
-          >
-            <button 
-              className="absolute top-8 right-6 text-white p-2"
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               onClick={() => setIsMobileMenuOpen(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-md z-[101] lg:hidden"
+            />
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 30, stiffness: 300 }}
+              className="fixed inset-y-0 right-0 w-[85%] max-w-sm bg-brand-navy z-[102] lg:hidden flex flex-col p-10 shadow-2xl"
             >
-              <X size={32} />
-            </button>
-            <div className="flex flex-col space-y-8">
-              {navLinks.map((link) => (
-                <button
-                  key={link.id}
-                  onClick={() => handleLinkClick(link.id)}
-                  className={`text-2xl uppercase tracking-widest text-left font-serif ${
-                    activePage === link.id ? "text-brand-gold" : "text-white"
-                  }`}
+              <div className="flex justify-between items-center mb-16">
+                <div className="flex flex-col">
+                  <span className="text-xl font-serif tracking-[0.2em] text-brand-gold leading-none uppercase">Varma</span>
+                  <span className="text-[9px] tracking-[0.3em] uppercase opacity-50 mt-1">Heritage Artisans</span>
+                </div>
+                <button 
+                  className="text-white p-2 hover:bg-white/5 rounded-full transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  {link.name}
+                  <X size={24} />
                 </button>
-              ))}
-              <a 
-                href={`https://wa.me/${CONTACT_INFO.whatsapp}?text=${WHATSAPP_APPOINTMENT_MSG}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full bg-brand-gold text-brand-navy py-5 text-sm font-bold uppercase tracking-widest text-center"
-              >
-                Book Appointment
-              </a>
-            </div>
-          </motion.div>
+              </div>
+
+              <div className="flex flex-col space-y-6">
+                {navLinks.map((link, i) => (
+                  <motion.button
+                    key={link.id}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 + i * 0.05 }}
+                    onClick={() => handleLinkClick(link.id)}
+                    className={`text-2xl uppercase tracking-widest text-left font-serif py-2 border-l-2 pl-6 transition-all ${
+                      activePage === link.id ? "text-brand-gold border-brand-gold" : "text-white/60 border-transparent hover:text-white"
+                    }`}
+                  >
+                    {link.name}
+                  </motion.button>
+                ))}
+              </div>
+
+              <div className="mt-auto pt-10">
+                <motion.a 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  href={`https://wa.me/${CONTACT_INFO.whatsapp}?text=${WHATSAPP_APPOINTMENT_MSG}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full bg-brand-gold text-brand-navy py-5 text-sm font-bold uppercase tracking-[0.2em] text-center block shadow-xl hover:bg-white transition-all transform active:scale-95"
+                >
+                  Book Appointment
+                </motion.a>
+                <p className="text-center text-[10px] uppercase tracking-widest text-white/30 mt-6 font-bold">
+                  Zaveri Bazaar, Mumbai
+                </p>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </nav>
