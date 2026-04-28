@@ -39,12 +39,12 @@ const WHATSAPP_APPOINTMENT_MSG = encodeURIComponent("Hello Varma Gems & Jeweller
 const WHATSAPP_GENERAL_MSG = encodeURIComponent("Hi, I am interested in your jewellery. Please share more details.");
 
 const IMAGES = {
-  hero: "https://images.unsplash.com/photo-1573408302382-90cd27076602?auto=format&fit=crop&q=80&w=2070",
-  precious: "https://images.unsplash.com/photo-1615655096345-64a515a447c3?auto=format&fit=crop&q=80&w=1080",
-  semiprecious: "https://images.unsplash.com/photo-1596941054117-735210175974?auto=format&fit=crop&q=80&w=1080",
-  custom: "https://images.unsplash.com/photo-1515562141207-7a88ef7ce338?auto=format&fit=crop&q=80&w=1080",
-  heritage: "https://images.unsplash.com/photo-1544365313-9799277c1d3c?auto=format&fit=crop&q=80&w=1080",
-  b2b: "https://images.unsplash.com/photo-1531973576160-7125cd663d86?auto=format&fit=crop&q=80&w=2070",
+  hero: "https://iili.io/BidZDDN.md.jpg",
+  precious: "https://iili.io/BidmvrF.md.jpg",
+  semiprecious: "https://iili.io/BidmU7a.md.jpg",
+  custom: "https://iili.io/BidmWej.md.jpg",
+  heritage: "https://iili.io/BidmSdg.md.jpg",
+  b2b: "https://iili.io/BidmgkJ.md.jpg",
 };
 
 const COLLECTIONS = [
@@ -204,75 +204,76 @@ const Hero = ({ onNavigate }: { onNavigate: (page: string) => void }) => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
+          className="text-center lg:text-left"
         >
-          <div className="inline-block px-3 py-1 border border-brand-gold/40 text-brand-gold text-[10px] tracking-[0.2em] uppercase mb-8 font-bold">
+          <div className="inline-block px-4 py-1.5 border border-brand-gold/40 text-brand-gold text-[10px] tracking-[0.2em] uppercase mb-8 font-bold rounded-full">
             Est. 1974 • Zaveri Bazaar, Mumbai
           </div>
-          <h1 className="text-5xl md:text-[80px] font-serif leading-[1.05] mb-8 text-white">
-            Premium Gemstones <br />
-            <span className="text-brand-gold italic">& Jewellery</span> <br />
+          <h1 className="text-4xl md:text-6xl lg:text-[80px] font-serif leading-[1.1] mb-8 text-white">
+            Premium Gemstones <br className="hidden lg:block" />
+            <span className="text-brand-gold italic">& Jewellery</span> <br className="hidden lg:block" />
             Direct from <span className="opacity-80">Zaveri Bazaar</span>
           </h1>
-          <p className="text-lg text-white/60 mb-10 leading-relaxed font-light max-w-lg">
+          <p className="text-base md:text-lg text-white/60 mb-10 leading-relaxed font-light max-w-lg mx-auto lg:mx-0">
             Certified diamonds, precious stones, and custom jewellery crafted by expert manufacturers. Experience the height of Mumbai's crafting legacy.
           </p>
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap justify-center lg:justify-start gap-4">
             <button 
               onClick={() => onNavigate('collections')}
-              className="px-10 py-5 bg-brand-gold text-brand-navy text-xs font-bold uppercase tracking-[0.2em] shadow-[0_10px_30px_rgba(212,175,55,0.25)] hover:scale-105 transition-all duration-300 active:scale-95"
+              className="px-8 md:px-10 py-4 md:py-5 bg-brand-gold text-brand-navy text-xs font-bold uppercase tracking-[0.2em] shadow-[0_10px_30px_rgba(212,175,55,0.25)] hover:scale-105 transition-all duration-300 active:scale-95"
             >
               Explore Collection
             </button>
             <button 
               onClick={() => onNavigate('gemstones')}
-              className="px-10 py-5 border border-white/20 text-white text-xs font-bold uppercase tracking-[0.2em] hover:bg-white/5 transition-all duration-300 active:scale-95"
+              className="px-8 md:px-10 py-4 md:py-5 border border-white/20 text-white text-xs font-bold uppercase tracking-[0.2em] hover:bg-white/5 transition-all duration-300 active:scale-95"
             >
               View Gemstones
             </button>
           </div>
 
-          <div className="mt-16 flex flex-wrap gap-x-12 gap-y-6 border-t border-white/10 pt-10">
+          <div className="mt-16 flex flex-wrap justify-center lg:justify-start gap-x-10 gap-y-6 border-t border-white/10 pt-10">
             <div className="flex items-center gap-3">
               <CheckCircle2 className="w-4 h-4 text-brand-gold" />
-              <span className="text-[11px] uppercase tracking-widest opacity-70">Certified Quality</span>
+              <span className="text-[10px] md:text-[11px] uppercase tracking-widest opacity-70 font-medium">Certified Quality</span>
             </div>
             <div className="flex items-center gap-3">
               <CheckCircle2 className="w-4 h-4 text-brand-gold" />
-              <span className="text-[11px] uppercase tracking-widest opacity-70">Direct Pricing</span>
+              <span className="text-[10px] md:text-[11px] uppercase tracking-widest opacity-70 font-medium">Direct Pricing</span>
             </div>
             <div className="flex items-center gap-3">
               <CheckCircle2 className="w-4 h-4 text-brand-gold" />
-              <span className="text-[11px] uppercase tracking-widest opacity-70">Global Export</span>
+              <span className="text-[10px] md:text-[11px] uppercase tracking-widest opacity-70 font-medium">Global Export</span>
             </div>
           </div>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.2 }}
-          className="relative group"
+          transition={{ duration: 1.2, delay: 0.2 }}
+          className="relative group w-full max-w-xl mx-auto lg:max-w-none"
         >
-          <div className="aspect-[4/5] relative overflow-hidden border border-white/10 bg-brand-navy">
+          <div className="aspect-[4/5] lg:aspect-[3/4] relative overflow-hidden rounded-2xl shadow-[0_30px_100px_rgba(0,0,0,0.6)] border border-white/10 bg-brand-navy">
             <img 
               src={IMAGES.hero} 
-              alt="Luxury Diamond Close-up" 
-              className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110"
+              alt="Premium Gems & Jewellery Featured" 
+              className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-110"
               referrerPolicy="no-referrer"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-brand-navy via-transparent to-transparent opacity-60" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
             
             {/* Overlay Info Card */}
-            <div className="absolute bottom-8 left-8 right-8 p-6 glass-card">
-              <p className="text-brand-gold text-[10px] tracking-widest uppercase mb-1">Featured Creation</p>
-              <h3 className="text-2xl mb-2 font-serif">The Eternal Solitaire</h3>
-              <p className="text-xs text-white/50 tracking-wide uppercase font-light">Custom Hand-Cut Grade A Diamond</p>
+            <div className="absolute bottom-6 left-6 right-6 md:bottom-8 md:left-8 md:right-8 p-6 md:p-8 glass-card border border-white/5 backdrop-blur-xl rounded-xl">
+              <p className="text-brand-gold text-[9px] md:text-[10px] tracking-widest uppercase mb-1 font-bold">Zaveri Bazaar Signature</p>
+              <h3 className="text-xl md:text-2xl mb-2 font-serif text-white">The Artisan's Masterpiece</h3>
+              <p className="text-[10px] md:text-xs text-white/50 tracking-wide uppercase font-light">Direct Manufacturing Excellence</p>
             </div>
           </div>
           
           {/* Decorative elements */}
-          <div className="absolute -top-6 -right-6 w-32 h-32 border border-brand-gold/20 -z-10" />
-          <div className="absolute -bottom-6 -left-6 w-32 h-32 border border-brand-gold/20 -z-10" />
+          <div className="absolute -top-6 -right-6 w-32 h-32 border border-brand-gold/20 -z-10 rounded-2xl hidden md:block" />
+          <div className="absolute -bottom-6 -left-6 w-32 h-32 border border-brand-gold/20 -z-10 rounded-2xl hidden md:block" />
         </motion.div>
       </div>
     </section>
@@ -345,7 +346,7 @@ const HeritageSection = ({ onNavigate }: { onNavigate: (page: string) => void })
         <div className="lg:w-1/2 relative">
           <div className="relative z-10 border border-brand-gold/20 p-2">
             <img 
-              src="https://images.unsplash.com/photo-1544365313-9799277c1d3c?auto=format&fit=crop&q=80&w=1080" 
+              src={IMAGES.heritage} 
               alt="Zaveri Bazaar Mastery" 
               className="w-full h-[600px] object-cover opacity-80"
               referrerPolicy="no-referrer"
@@ -683,12 +684,12 @@ const CollectionsView = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
       {/* Expanded Collection Cards */}
       {[
-        { title: "Engagement Rings", img: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&q=80&w=800" },
-        { title: "Bridal Sets", img: "https://images.unsplash.com/photo-1515562141207-7a88ef7ce338?auto=format&fit=crop&q=80&w=800" },
-        { title: "Diamond Necklaces", img: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&q=80&w=800" },
-        { title: "Gold Bracelets", img: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&q=80&w=800" },
-        { title: "Temple Jewellery", img: "https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?auto=format&fit=crop&q=80&w=800" },
-        { title: "Modern Minimal", img: "https://images.unsplash.com/photo-1573408302115-99a380961803?auto=format&fit=crop&q=80&w=800" },
+        { title: "Engagement Rings", img: "https://iili.io/BidmEge.md.jpg" },
+        { title: "Bridal Sets", img: "https://iili.io/Bidm119.md.jpg" },
+        { title: "Diamond Necklaces", img: "https://iili.io/BidmV5b.md.jpg" },
+        { title: "Gold Bracelets", img: "https://iili.io/BidmMdu.md.jpg" },
+        { title: "Temple Jewellery", img: "https://iili.io/BidmWej.md.jpg" },
+        { title: "Modern Minimal", img: "https://iili.io/BidmXmx.md.jpg" },
       ].map((cat, i) => (
         <motion.div 
           key={i}
@@ -718,10 +719,10 @@ const GemstonesView = () => (
     </p>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
       {[
-        { name: "Rubies", color: "Crimson Red", img: "https://images.unsplash.com/photo-1615655096345-64a515a447c3?auto=format&fit=crop&q=80&w=600" },
-        { name: "Emeralds", color: "Forest Green", img: "https://images.unsplash.com/photo-1596941054117-735210175974?auto=format&fit=crop&q=80&w=600" },
-        { name: "Sapphires", color: "Royal Blue", img: "https://images.unsplash.com/photo-1543329243-7f287be177b7?auto=format&fit=crop&q=80&w=600" },
-        { name: "Yellow Topaz", color: "Golden Sun", img: "https://images.unsplash.com/photo-1601121141499-17ae80afc03a?auto=format&fit=crop&q=80&w=600" },
+        { name: "Rubies", color: "Crimson Red", img: "https://iili.io/BidmjzQ.md.jpg" },
+        { name: "Emeralds", color: "Forest Green", img: "https://iili.io/BidmwXV.md.jpg" },
+        { name: "Sapphires", color: "Royal Blue", img: "https://iili.io/BidmNLB.md.jpg" },
+        { name: "Yellow Topaz", color: "Golden Sun", img: "https://iili.io/Bidmk11.md.jpg" },
       ].map((stone, i) => (
         <div key={i} className="glass-card p-6 border-brand-gold/10 group active:scale-95 transition-transform">
           <div className="aspect-square overflow-hidden mb-6 border border-white/5">
