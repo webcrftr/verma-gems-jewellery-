@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect, useRef, FormEvent } from "react";
 import { 
   Diamond, 
   Gem, 
@@ -35,6 +35,8 @@ const CONTACT_INFO = {
   owner: "M. G. Varma (Manoj)"
 };
 
+const LOGO_URL = "https://iili.io/BiKw4S9.md.png";
+
 const WHATSAPP_APPOINTMENT_MSG = encodeURIComponent("Hello Varma Gems, I want to enquire about your products.");
 const WHATSAPP_GENERAL_MSG = encodeURIComponent("Hello Varma Gems, I want to enquire about your products.");
 
@@ -49,27 +51,27 @@ const IMAGES = {
 
 const COLLECTIONS = [
   {
-    id: "precious",
-    title: "Precious Stones",
-    category: "Ruby • Emerald • Sapphire",
-    desc: "Investment-grade precious gemstones sourced directly from global mines.",
-    image: IMAGES.precious,
+    id: "navgraha",
+    title: "Navgraha Gemstones",
+    category: "Planetary Gemstones",
+    desc: "Ruby, Pearl, Emerald, Yellow Sapphire, Diamond, Blue Sapphire, and more.",
+    image: "https://iili.io/BidmjzQ.md.jpg",
     icon: <GemIcon className="w-5 h-5" />,
   },
   {
-    id: "semiprecious",
-    title: "Semi-Precious Stones",
-    category: "Vibrant Collection",
-    desc: "Exquisite variety of colored stones for retail and commercial applications.",
-    image: IMAGES.semiprecious,
+    id: "jewellery",
+    title: "Jewellery Collection",
+    category: "Professional Curation",
+    desc: "Rings, Bracelets, Necklaces, and Pendants crafted with excellence.",
+    image: "https://iili.io/BidmV5b.md.jpg",
     icon: <Gem className="w-5 h-5" />,
   },
   {
     id: "custom",
     title: "Custom Jewellery",
-    category: "Mastery",
-    desc: "Bespoke diamond and gemstone settings handcrafted by Zaveri Bazaar artisans.",
-    image: IMAGES.custom,
+    category: "Bespoke Mastery",
+    desc: "Personalized jewellery and made-to-order designs handcrafted for you.",
+    image: "https://iili.io/BidmWej.md.jpg",
     icon: <Hammer className="w-5 h-5" />,
   },
 ];
@@ -84,7 +86,7 @@ const BackgroundAtmosphere = () => (
   </div>
 );
 
-const Navbar = ({ activePage, onPageChange }: { activePage: string, onPageChange: (page: string) => void }) => {
+const Navbar = ({ activePage, onPageChange }: { activePage: string, onPageChange: (page: string, category?: string) => void }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -124,9 +126,8 @@ const Navbar = ({ activePage, onPageChange }: { activePage: string, onPageChange
       }`}
     >
       <div className="container mx-auto px-6 lg:px-12 flex justify-between items-center">
-        <button onClick={() => handleLinkClick('home')} className="flex flex-col group text-left">
-          <span className="text-xl lg:text-2xl font-serif tracking-[0.2em] text-brand-gold leading-none uppercase group-hover:text-white transition-colors">Varma</span>
-          <span className="text-[9px] lg:text-[10px] tracking-[0.4em] uppercase opacity-60 mt-1">Gems & Jewellery</span>
+        <button onClick={() => handleLinkClick('home')} className="flex items-center group">
+          <img src={LOGO_URL} alt="Varma Gems & Jewellery" className="h-12 lg:h-16 w-auto object-contain transition-transform group-hover:scale-105" />
         </button>
 
         {/* Desktop Nav */}
@@ -172,6 +173,9 @@ const Navbar = ({ activePage, onPageChange }: { activePage: string, onPageChange
             className="fixed inset-0 bg-[#0b1c2c] z-[105] lg:hidden flex flex-col items-center justify-center p-8 overflow-hidden"
           >
             <div className="flex flex-col items-center space-y-10 w-full">
+              <div className="mb-6">
+                <img src={LOGO_URL} alt="Varma Gems & Jewellery" className="h-20 w-auto object-contain" />
+              </div>
               {navLinks.map((link, i) => (
                 <motion.button
                   key={link.id}
@@ -216,7 +220,7 @@ const Navbar = ({ activePage, onPageChange }: { activePage: string, onPageChange
   );
 };
 
-const Hero = ({ onNavigate }: { onNavigate: (page: string) => void }) => {
+const Hero = ({ onNavigate }: { onNavigate: (page: string, category?: string) => void }) => {
   return (
     <section id="home" className="relative min-h-[90vh] flex items-center pt-32 pb-20">
       <div className="container mx-auto px-6 lg:px-12 grid lg:grid-cols-2 gap-16 items-center z-10">
@@ -300,7 +304,7 @@ const Hero = ({ onNavigate }: { onNavigate: (page: string) => void }) => {
   );
 };
 
-const CollectionsSection = ({ onNavigate }: { onNavigate: (page: string) => void }) => {
+const CollectionsSection = ({ onNavigate }: { onNavigate: (page: string, category?: string) => void }) => {
   return (
     <section id="collections" className="py-32 relative">
       <div className="container mx-auto px-6 lg:px-12">
@@ -328,7 +332,7 @@ const CollectionsSection = ({ onNavigate }: { onNavigate: (page: string) => void
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.2 }}
               viewport={{ once: true }}
-              onClick={() => onNavigate(item.id === 'precious' || item.id === 'semiprecious' ? 'gemstones' : 'collections')}
+              onClick={() => onNavigate('collections', item.id)}
               className="relative overflow-hidden group border border-white/10 flex flex-col aspect-[4/5] bg-brand-navy p-8 cursor-pointer"
             >
               <div className="absolute inset-0 z-0">
@@ -359,7 +363,7 @@ const CollectionsSection = ({ onNavigate }: { onNavigate: (page: string) => void
   );
 };
 
-const HeritageSection = ({ onNavigate }: { onNavigate: (page: string) => void }) => {
+const HeritageSection = ({ onNavigate }: { onNavigate: (page: string, category?: string) => void }) => {
   return (
     <section id="heritage" className="py-20 lg:py-32 bg-white/5 border-y border-white/5 overflow-hidden">
       <div className="container mx-auto px-6 lg:px-12 flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
@@ -412,7 +416,7 @@ const HeritageSection = ({ onNavigate }: { onNavigate: (page: string) => void })
   );
 };
 
-const B2BPortal = ({ onNavigate }: { onNavigate: (page: string) => void }) => {
+const B2BPortal = ({ onNavigate }: { onNavigate: (page: string, category?: string) => void }) => {
   return (
     <section id="b2b" className="py-20 lg:py-32 relative">
       <div className="container mx-auto px-6 lg:px-12">
@@ -589,15 +593,14 @@ Thank you 😊`;
   );
 };
 
-const Footer = ({ onNavigate }: { onNavigate: (page: string) => void }) => {
+const Footer = ({ onNavigate }: { onNavigate: (page: string, category?: string) => void }) => {
   return (
     <footer className="bg-black/40 py-20 border-t border-white/5">
       <div className="container mx-auto px-6 lg:px-12">
         <div className="flex flex-col lg:flex-row justify-between items-start gap-16 pb-20">
         <div className="lg:w-1/3">
           <div className="flex flex-col mb-8">
-            <span className="text-2xl font-serif tracking-[0.2em] text-brand-gold leading-none uppercase">Varma</span>
-            <span className="text-[10px] tracking-[0.4em] uppercase opacity-60 mt-1">Gems & Jewellery</span>
+            <img src={LOGO_URL} alt="Varma Gems & Jewellery" className="h-12 w-auto object-contain self-start" />
           </div>
           <p className="text-white/30 text-sm font-light leading-relaxed mb-8">
             Direct manufacturers and exporters of precious and semi-precious stones. Trustworthy and authentic crafting since 1974.
@@ -700,20 +703,31 @@ const StickyActions = () => {
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState("home");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const handleNavigate = (page: string, category?: string) => {
+    setCurrentPage(page);
+    if (category) {
+      setSelectedCategory(category);
+    } else {
+      setSelectedCategory(null);
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const renderContent = () => {
     switch (currentPage) {
       case "home":
         return (
           <>
-            <Hero onNavigate={setCurrentPage} />
-            <CollectionsSection onNavigate={setCurrentPage} />
-            <HeritageSection onNavigate={setCurrentPage} />
-            <B2BPortal onNavigate={setCurrentPage} />
+            <Hero onNavigate={handleNavigate} />
+            <CollectionsSection onNavigate={handleNavigate} />
+            <HeritageSection onNavigate={handleNavigate} />
+            <B2BPortal onNavigate={handleNavigate} />
           </>
         );
       case "collections":
-        return <CollectionsView />;
+        return <CollectionsView category={selectedCategory} />;
       case "gemstones":
         return <GemstonesView />;
       case "wholesale":
@@ -721,14 +735,14 @@ export default function App() {
       case "heritage":
         return <HeritageView />;
       default:
-        return <Hero onNavigate={setCurrentPage} />;
+        return <Hero onNavigate={handleNavigate} />;
     }
   };
 
   return (
     <div className="bg-brand-navy min-h-screen selection:bg-brand-gold selection:text-brand-navy overflow-hidden">
       <BackgroundAtmosphere />
-      <Navbar activePage={currentPage} onPageChange={setCurrentPage} />
+      <Navbar activePage={currentPage} onPageChange={handleNavigate} />
       <main className="relative z-10">
         <AnimatePresence mode="wait">
           <motion.div
@@ -743,7 +757,7 @@ export default function App() {
         </AnimatePresence>
         <ContactArea />
       </main>
-      <Footer onNavigate={setCurrentPage} />
+      <Footer onNavigate={handleNavigate} />
       <StickyActions />
     </div>
   );
@@ -751,38 +765,134 @@ export default function App() {
 
 // --- Specific Views ---
 
-const CollectionsView = () => (
-  <section className="pt-40 pb-20 container mx-auto px-6 lg:px-12">
-    <h2 className="text-brand-gold text-xs tracking-[0.5em] uppercase mb-6">Exquisite Masterpieces</h2>
-    <h3 className="text-5xl font-serif text-white mb-16">The Jewellery Collections</h3>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-      {/* Expanded Collection Cards */}
-      {[
-        { title: "Engagement Rings", img: "https://iili.io/BidmEge.md.jpg" },
-        { title: "Bridal Sets", img: "https://iili.io/Bidm119.md.jpg" },
-        { title: "Diamond Necklaces", img: "https://iili.io/BidmV5b.md.jpg" },
-        { title: "Gold Bracelets", img: "https://iili.io/BidmMdu.md.jpg" },
-        { title: "Temple Jewellery", img: "https://iili.io/BidmWej.md.jpg" },
-        { title: "Modern Minimal", img: "https://iili.io/BidmXmx.md.jpg" },
-      ].map((cat, i) => (
-        <motion.div 
-          key={i}
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: i * 0.1 }}
-          className="group relative overflow-hidden aspect-square border border-white/10"
-        >
-          <img src={cat.img} alt={cat.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70" />
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-navy via-transparent to-transparent" />
-          <div className="absolute bottom-6 left-6">
-            <h4 className="text-2xl font-serif text-white">{cat.title}</h4>
-            <button className="text-[10px] text-brand-gold uppercase tracking-[0.2em] mt-2 opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">View Details</button>
+const CollectionsView = ({ category }: { category: string | null }) => {
+  const navgrahaRef = useRef<HTMLDivElement>(null);
+  const jewelleryRef = useRef<HTMLDivElement>(null);
+  const customRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (category) {
+      const timer = setTimeout(() => {
+        let targetRef = null;
+        if (category === 'navgraha') targetRef = navgrahaRef;
+        if (category === 'jewellery') targetRef = jewelleryRef;
+        if (category === 'custom') targetRef = customRef;
+
+        if (targetRef && targetRef.current) {
+          targetRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [category]);
+
+  const navgrahaStones = [
+    { name: "Ruby", planet: "Sun", img: "https://iili.io/BidmjzQ.md.jpg" },
+    { name: "Pearl", planet: "Moon", img: "https://iili.io/Bidmk11.md.jpg" },
+    { name: "Red Coral", planet: "Mars", img: "https://iili.io/BidmjzQ.md.jpg" },
+    { name: "Emerald", planet: "Mercury", img: "https://iili.io/BidmwXV.md.jpg" },
+    { name: "Yellow Sapphire", planet: "Jupiter", img: "https://iili.io/BidmNLB.md.jpg" },
+    { name: "Diamond", planet: "Venus", img: "https://iili.io/BidZDDN.md.jpg" },
+    { name: "Blue Sapphire", planet: "Saturn", img: "https://iili.io/BidmNLB.md.jpg" },
+    { name: "Hessonite", planet: "Rahu", img: "https://iili.io/BidmjzQ.md.jpg" },
+    { name: "Cat’s Eye", planet: "Ketu", img: "https://iili.io/BidmjzQ.md.jpg" },
+  ];
+
+  const jewelleryItems = [
+    { title: "Rings", img: "https://iili.io/BidmEge.md.jpg" },
+    { title: "Bracelets", img: "https://iili.io/BidmMdu.md.jpg" },
+    { title: "Necklaces", img: "https://iili.io/BidmV5b.md.jpg" },
+    { title: "Pendants", img: "https://iili.io/BidmXmx.md.jpg" },
+  ];
+
+  return (
+    <div className="pt-32 pb-20">
+      {/* Navgraha Section */}
+      <section ref={navgrahaRef} className="py-20 lg:py-32 container mx-auto px-6 lg:px-12 scroll-mt-24">
+        <header className="mb-16 text-center lg:text-left">
+          <h2 className="text-brand-gold text-xs tracking-[0.5em] uppercase mb-6">Planetary Excellence</h2>
+          <h3 className="text-4xl lg:text-6xl font-serif text-white mb-8">Navgraha Gemstones</h3>
+          <p className="text-white/50 max-w-2xl font-light leading-relaxed text-lg mx-auto lg:mx-0">
+            9 mandatory planetary gemstones selected for their astrological significance and premium clarity.
+          </p>
+        </header>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 lg:gap-8">
+          {navgrahaStones.map((stone, i) => (
+            <motion.div 
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05 }}
+              className="glass-card p-4 lg:p-6 border-white/5 group hover:border-brand-gold/30 transition-all"
+            >
+              <div className="aspect-square overflow-hidden mb-6 rounded-lg grayscale group-hover:grayscale-0 transition-all duration-700">
+                <img src={stone.img} alt={stone.name} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
+              </div>
+              <h4 className="text-white font-serif text-lg">{stone.name}</h4>
+              <p className="text-brand-gold text-[10px] uppercase tracking-widest mt-1 opacity-70">Planet: {stone.planet}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* Jewellery Section */}
+      <section ref={jewelleryRef} className="py-20 lg:py-32 bg-white/5 border-y border-white/5 scroll-mt-24">
+        <div className="container mx-auto px-6 lg:px-12">
+          <header className="mb-16 text-center lg:text-left">
+            <h2 className="text-brand-gold text-xs tracking-[0.5em] uppercase mb-6">The Artisan's Selection</h2>
+            <h3 className="text-4xl lg:text-6xl font-serif text-white mb-8">Jewellery Collection</h3>
+          </header>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {jewelleryItems.map((item, i) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: i * 0.1 }}
+                className="group relative h-[450px] overflow-hidden rounded-2xl border border-white/10"
+              >
+                <img src={item.img} alt={item.title} className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110 opacity-70" />
+                <div className="absolute inset-0 bg-gradient-to-t from-brand-navy via-transparent to-transparent opacity-80" />
+                <div className="absolute bottom-8 left-8">
+                  <h4 className="text-3xl font-serif text-white">{item.title}</h4>
+                  <div className="w-12 h-[2px] bg-brand-gold mt-4 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform" />
+                </div>
+              </motion.div>
+            ))}
           </div>
-        </motion.div>
-      ))}
+        </div>
+      </section>
+
+      {/* Custom Section */}
+      <section ref={customRef} className="py-20 lg:py-32 container mx-auto px-6 lg:px-12 scroll-mt-24">
+        <div className="glass-card p-10 lg:p-24 flex flex-col lg:flex-row items-center gap-16 lg:gap-24 overflow-hidden">
+          <div className="lg:w-1/2">
+            <h2 className="text-brand-gold text-xs tracking-[0.5em] uppercase mb-8 block">Bespoke Design</h2>
+            <h3 className="text-4xl lg:text-6xl font-serif text-white mb-8">Custom Jewellery</h3>
+            <p className="text-white/60 mb-10 text-lg font-light leading-relaxed">
+              Personalized jewellery and made-to-order designs handcrafted for your unique style. Our master artisans in Zaveri Bazaar bring your vision to life with precision and passion.
+            </p>
+            <ul className="space-y-6 mb-12">
+              <li className="flex items-center gap-4 text-white/80">
+                <div className="w-10 h-10 rounded-full border border-brand-gold/30 flex items-center justify-center text-brand-gold">✓</div>
+                <span className="uppercase tracking-[0.2em] text-xs font-bold">Personalized Engravings</span>
+              </li>
+              <li className="flex items-center gap-4 text-white/80">
+                <div className="w-10 h-10 rounded-full border border-brand-gold/30 flex items-center justify-center text-brand-gold">✓</div>
+                <span className="uppercase tracking-[0.2em] text-xs font-bold">Custom Gemstone Settings</span>
+              </li>
+            </ul>
+          </div>
+          <div className="lg:w-1/2 relative">
+            <div className="aspect-square w-full rounded-2xl overflow-hidden border border-brand-gold/20 p-2">
+              <img src="https://iili.io/BidmWej.md.jpg" alt="Custom Manufacturing" className="w-full h-full object-cover rounded-xl" />
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
-  </section>
-);
+  );
+};
 
 const GemstonesView = () => (
   <section className="pt-40 pb-20 container mx-auto px-6 lg:px-12">
