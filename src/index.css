@@ -43,3 +43,46 @@ html {
     @apply bg-white/5 backdrop-blur-md border border-white/10;
   }
 }
+
+/* Mobile Visibility Fixes */
+@media (max-width: 768px) {
+  /* Remove overlays that obscure images */
+  .overlay,
+  .gradient-overlay,
+  .dark-overlay,
+  .absolute.inset-0[class*="bg-gradient-"],
+  .absolute.inset-0[class*="bg-black/"],
+  .absolute.inset-0[class*="bg-brand-navy/"] {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+  }
+
+  /* Reset image filters and opacity */
+  img {
+    filter: none !important;
+    -webkit-filter: none !important;
+    opacity: 1 !important;
+  }
+
+  /* Force grayscale removal */
+  .grayscale,
+  [class*="grayscale"] {
+    filter: grayscale(0) !important;
+    -webkit-filter: grayscale(0) !important;
+  }
+
+  /* Remove card fade effects */
+  .collection-card::before,
+  .collection-card::after,
+  .group::before,
+  .group::after {
+    display: none !important;
+    opacity: 0 !important;
+  }
+
+  /* Fix for specific sections with low opacity images */
+  .opacity-40, .opacity-60, .opacity-80 {
+    opacity: 1 !important;
+  }
+}
