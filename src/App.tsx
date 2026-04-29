@@ -148,7 +148,13 @@ const Navbar = ({ activePage, onPageChange }: { activePage: string, onPageChange
     >
       <div className="container mx-auto px-6 lg:px-12 flex justify-between items-center">
         <button onClick={() => handleLinkClick('home')} className="flex items-center group">
-          <img src={LOGO_URL} alt="Varma Gems & Jewellery" className="h-12 lg:h-16 w-auto object-contain transition-transform group-hover:scale-105" />
+          <img 
+            src={LOGO_URL} 
+            alt="Varma Gems & Jewellery" 
+            className={`w-auto object-contain transition-all duration-500 group-hover:scale-110 ${
+              isScrolled ? "h-14 lg:h-20" : "h-20 lg:h-32"
+            }`} 
+          />
         </button>
 
         {/* Desktop Nav */}
@@ -195,7 +201,7 @@ const Navbar = ({ activePage, onPageChange }: { activePage: string, onPageChange
           >
             <div className="flex flex-col items-center space-y-10 w-full">
               <div className="mb-6">
-                <img src={LOGO_URL} alt="Varma Gems & Jewellery" className="h-20 w-auto object-contain" />
+                <img src={LOGO_URL} alt="Varma Gems & Jewellery" className="h-28 w-auto object-contain" />
               </div>
               {navLinks.map((link, i) => (
                 <motion.button
@@ -679,7 +685,7 @@ const Footer = ({ onNavigate }: { onNavigate: (page: string, category?: string) 
         <div className="flex flex-col lg:flex-row justify-between items-start gap-16 pb-20">
         <div className="lg:w-1/3">
           <div className="flex flex-col mb-8">
-            <img src={LOGO_URL} alt="Varma Gems & Jewellery" className="h-12 w-auto object-contain self-start" />
+            <img src={LOGO_URL} alt="Varma Gems & Jewellery" className="h-20 lg:h-24 w-auto object-contain self-start" />
           </div>
           <p className="text-white/30 text-sm font-light leading-relaxed mb-8">
             Direct manufacturers and exporters of precious and semi-precious stones. Trustworthy and authentic crafting since 1974.
@@ -979,18 +985,14 @@ const CollectionsView = ({ category }: { category: string | null }) => {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: i * 0.1 }}
-                className="group flex flex-col"
+                className="group"
               >
-                <div className="overflow-hidden rounded-[12px] border border-white/10 h-[300px] mb-6 relative">
+                <div className="overflow-hidden rounded-[12px] border border-white/10 h-[300px] relative">
                   <img 
                     src={item.img} 
                     alt={item.title} 
                     className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-80" 
                   />
-                </div>
-                <div className="flex flex-col items-center lg:items-start">
-                  <h4 className="text-2xl font-serif text-white">{item.title}</h4>
-                  <div className="w-10 h-[1px] bg-brand-gold mt-3 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform" />
                 </div>
               </motion.div>
             ))}
