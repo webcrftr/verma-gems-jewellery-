@@ -504,6 +504,12 @@ const GemstonesJewellerySection = ({ id }: { id?: string }) => {
   const images = [
     "https://iili.io/Bi6TGNn.md.jpg",
     "https://iili.io/Bi6T19t.md.jpg",
+    "https://iili.io/BiyqFdG.md.jpg",
+    "https://iili.io/BiyqJqX.md.webp",
+    "https://iili.io/BiyfpzN.jpg",
+    "https://iili.io/BiyqK7f.jpg",
+    "https://iili.io/BiyqCI2.md.webp",
+    "https://iili.io/Biyq2gs.md.jpg",
     "https://iili.io/Bi6TXVf.md.jpg",
     "https://iili.io/Bi6TWoG.md.jpg",
     "https://iili.io/Bi6TkH7.md.jpg",
