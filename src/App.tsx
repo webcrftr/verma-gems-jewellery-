@@ -38,6 +38,18 @@ const CONTACT_INFO = {
 
 const LOGO_URL = "https://iili.io/BiKw4S9.md.png";
 
+const NAVGRAHA_STONES = [
+  { name: "Ruby (Surya)", planet: "Sun", img: "https://iili.io/BiU6jPs.jpg" },
+  { name: "Pearl (Chandra)", planet: "Moon", img: "https://iili.io/BiUinpV.md.webp" },
+  { name: "Red Coral (Mangal)", planet: "Mars", img: "https://iili.io/BiUsBPn.jpg" },
+  { name: "Emerald (Budh)", planet: "Mercury", img: "https://iili.io/BiULg7j.md.webp" },
+  { name: "Yellow Sapphire (Guru)", planet: "Jupiter", img: "https://iili.io/BiUZH8b.jpg" },
+  { name: "Diamond (Shukra)", planet: "Venus", img: "https://iili.io/BidZDDN.md.jpg" },
+  { name: "Blue Sapphire (Shani)", planet: "Saturn", img: "https://iili.io/BiUZ4WB.jpg" },
+  { name: "Hessonite (Rahu)", planet: "Rahu", img: "https://iili.io/BiggkkN.jpg" },
+  { name: "Cat’s Eye (Ketu)", planet: "Ketu", img: "https://iili.io/BigHa87.jpg" },
+];
+
 const WHATSAPP_APPOINTMENT_MSG = encodeURIComponent("Hello Varma Gems, I want to enquire about your products.");
 const WHATSAPP_GENERAL_MSG = encodeURIComponent("Hello Varma Gems, I want to enquire about your products.");
 
@@ -869,18 +881,6 @@ const CollectionsView = ({ category }: { category: string | null }) => {
     }
   }, [category]);
 
-  const navgrahaStones = [
-    { name: "Ruby (Surya)", planet: "Sun", img: "https://iili.io/BiU6jPs.jpg" },
-    { name: "Pearl (Chandra)", planet: "Moon", img: "https://iili.io/BiUinpV.md.webp" },
-    { name: "Red Coral (Mangal)", planet: "Mars", img: "https://iili.io/BiUsBPn.jpg" },
-    { name: "Emerald (Budh)", planet: "Mercury", img: "https://iili.io/BiULg7j.md.webp" },
-    { name: "Yellow Sapphire (Guru)", planet: "Jupiter", img: "https://iili.io/BiUZH8b.jpg" },
-    { name: "Diamond (Shukra)", planet: "Venus", img: "https://iili.io/BidZDDN.md.jpg" },
-    { name: "Blue Sapphire (Shani)", planet: "Saturn", img: "https://iili.io/BiUZ4WB.jpg" },
-    { name: "Hessonite (Rahu)", planet: "Rahu", img: "https://iili.io/BiggkkN.jpg" },
-    { name: "Cat’s Eye (Ketu)", planet: "Ketu", img: "https://iili.io/BigHa87.jpg" },
-  ];
-
   const customJewelleryItems = [
     { title: "Rings", images: ["https://iili.io/Bi4ATVj.jpg", "https://iili.io/Bi4AIob.md.jpg"] },
     { title: "Bracelets", images: ["https://iili.io/Bi41Kfn.md.jpg", "https://iili.io/Birj8EN.md.jpg"] },
@@ -900,14 +900,14 @@ const CollectionsView = ({ category }: { category: string | null }) => {
       {/* Navgraha Section */}
       <section id="navgraha" ref={navgrahaRef} className="py-20 lg:py-32 container mx-auto px-6 lg:px-12 scroll-mt-24">
         <header className="mb-16 text-center lg:text-left">
-          <h2 className="text-brand-gold text-xs tracking-[0.5em] uppercase mb-6">Planetary Gemstones</h2>
+          <h2 className="text-brand-gold text-xs tracking-[0.5em] uppercase mb-6">Astrology-based gemstones</h2>
           <h3 className="text-4xl lg:text-6xl font-serif text-white mb-8">Navgraha Gemstones</h3>
           <p className="text-white/50 max-w-2xl font-light leading-relaxed text-lg mx-auto lg:mx-0">
             9 mandatory planetary gemstones selected for their astrological significance and premium clarity.
           </p>
         </header>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 lg:gap-8">
-          {navgrahaStones.map((stone, i) => (
+          {NAVGRAHA_STONES.map((stone, i) => (
             <motion.div 
               key={i}
               initial={{ opacity: 0, y: 20 }}
@@ -1002,29 +1002,38 @@ const CollectionsView = ({ category }: { category: string | null }) => {
 };
 
 const GemstonesView = () => (
-  <section className="pt-40 pb-20 container mx-auto px-6 lg:px-12">
-    <h2 className="text-brand-gold text-xs tracking-[0.5em] uppercase mb-6">Loose Gemstones</h2>
-    <h3 className="text-5xl font-serif text-white mb-8">Certified Natural Stones</h3>
-    <p className="text-white/60 max-w-2xl mb-16 font-light leading-relaxed text-lg">
-      We source premium loose gemstones directly from mines in Thailand, Sri Lanka, and Africa. Every stone is certified by leading laboratories including GIA and IGI.
-    </p>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-      {[
-        { name: "Rubies", color: "Crimson Red", img: "https://iili.io/BidmjzQ.md.jpg" },
-        { name: "Emeralds", color: "Forest Green", img: "https://iili.io/BidmwXV.md.jpg" },
-        { name: "Sapphires", color: "Royal Blue", img: "https://iili.io/BidmNLB.md.jpg" },
-        { name: "Yellow Topaz", color: "Golden Sun", img: "https://iili.io/Bidmk11.md.jpg" },
-      ].map((stone, i) => (
-        <div key={i} className="glass-card p-6 border-brand-gold/10 group active:scale-95 transition-transform">
-          <div className="aspect-square overflow-hidden mb-6 border border-white/5">
-            <img src={stone.img} alt={stone.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[1s]" />
-          </div>
-          <h4 className="text-xl font-serif text-white mb-2">{stone.name}</h4>
-          <p className="text-[10px] text-brand-gold uppercase tracking-widest">{stone.color}</p>
-        </div>
-      ))}
-    </div>
-  </section>
+  <div className="pt-32 pb-20">
+    {/* Navgraha Gemstones Section */}
+    <section id="navgraha-loose" className="py-20 lg:py-32 container mx-auto px-6 lg:px-12 scroll-mt-24">
+      <header className="mb-16 text-center lg:text-left">
+        <h2 className="text-brand-gold text-xs tracking-[0.5em] uppercase mb-6">Astrology-based gemstones</h2>
+        <h3 className="text-4xl lg:text-6xl font-serif text-white mb-8">Navgraha Gemstones</h3>
+        <p className="text-white/50 max-w-2xl font-light leading-relaxed text-lg mx-auto lg:mx-0">
+          9 mandatory planetary gemstones selected for their astrological significance and premium clarity.
+        </p>
+      </header>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 lg:gap-8">
+        {NAVGRAHA_STONES.map((stone, i) => (
+          <motion.div 
+            key={i}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.05 }}
+            className="glass-card p-4 lg:p-6 border-white/5 group hover:border-brand-gold/30 transition-all"
+          >
+            <div className="aspect-square overflow-hidden mb-6 rounded-lg grayscale group-hover:grayscale-0 transition-all duration-700">
+              <img src={stone.img} alt={stone.name} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
+            </div>
+            <h4 className="text-white font-serif text-lg">{stone.name}</h4>
+            <p className="text-brand-gold text-[10px] uppercase tracking-widest mt-1 opacity-70">Planet: {stone.planet}</p>
+          </motion.div>
+        ))}
+      </div>
+    </section>
+
+    {/* Gemstones & Jewellery Section */}
+    <GemstonesJewellerySection id="loose-gemstones-jewellery" />
+  </div>
 );
 
 const WholesaleView = () => (
