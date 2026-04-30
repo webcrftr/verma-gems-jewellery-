@@ -514,14 +514,27 @@ const GemstonesJewellerySection = ({ id }: { id?: string }) => {
     "https://iili.io/Bi6TWoG.md.jpg",
     "https://iili.io/Bi6TkH7.md.jpg",
     "https://iili.io/Bi6T8Ne.md.jpg",
+    "https://iili.io/Bs0JN6b.md.webp",
+    "https://iili.io/Bs0JeFj.md.webp",
+    "https://iili.io/Bs0Jjne.webp",
+    "https://iili.io/Bs0JwMu.webp",
+    "https://iili.io/Bs0Jkcx.webp",
+    "https://iili.io/Bs0Jv8Q.webp",
+    "https://iili.io/Bs0JS9V.webp",
+    "https://iili.io/Bs0JPMg.md.webp",
+    "https://iili.io/Bs0JiPa.md.webp",
+    "https://iili.io/Bs0JLKJ.webp",
+    "https://iili.io/Bs0JQcv.webp",
+    "https://iili.io/Bs0JZSR.webp",
+    "https://iili.io/Bs0JD9p.md.webp",
   ];
 
   return (
     <section id={id} className="py-20 lg:py-32 overflow-hidden border-t border-white/5 scroll-mt-24">
-      <div className="container mx-auto px-6 lg:px-12 flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
-        <div className="w-full lg:w-1/2">
+      <div className="container mx-auto px-6 lg:px-12 flex flex-col lg:flex-row items-start gap-16 lg:gap-24">
+        <div className="w-full lg:w-1/3 lg:sticky lg:top-32">
           <h2 className="text-brand-gold text-xs tracking-[0.5em] uppercase mb-6 block font-bold">Premium Craftsmanship & Elegant Designs</h2>
-          <h3 className="text-4xl lg:text-6xl font-serif text-white mb-8">Gemstones & Jewellery</h3>
+          <h3 className="text-4xl lg:text-5xl font-serif text-white mb-8">Gemstones & Jewellery</h3>
           <p className="text-white/60 mb-10 text-lg font-light leading-relaxed">
             Explore our finest collection of handcrafted jewellery and premium gemstones designed for elegance and everyday luxury.
           </p>
@@ -538,16 +551,24 @@ const GemstonesJewellerySection = ({ id }: { id?: string }) => {
             ))}
           </ul>
         </div>
-        <div className="w-full lg:w-1/2">
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 lg:gap-6">
+        <div className="w-full lg:w-2/3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
             {images.map((img, idx) => (
               <motion.div 
                 key={idx}
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.4 }}
-                className="relative overflow-hidden rounded-[12px] group h-[200px] lg:h-[220px] border border-white/10"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: (idx % 6) * 0.1 }}
+                whileHover={{ scale: 1.03 }}
+                className="relative overflow-hidden rounded-[12px] group aspect-square border border-white/10"
               >
-                <img src={img} alt={`Gallery ${idx}`} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+                <img 
+                  src={img} 
+                  alt={`Gallery ${idx}`} 
+                  className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                  loading="lazy"
+                />
                 <div className="absolute inset-0 bg-brand-navy/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                    <ArrowUpRight className="w-8 h-8 text-brand-gold" />
                 </div>
