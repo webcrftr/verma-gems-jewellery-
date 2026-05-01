@@ -108,7 +108,97 @@ const BackgroundAtmosphere = () => (
   </div>
 );
 
-const JewelleryCarousel = ({ images, title }: { images: string[], title: string }) => {
+const Lightbox = ({ 
+  isOpen, 
+  images, 
+  currentIndex, 
+  onClose, 
+  onPrev, 
+  onNext 
+}: { 
+  isOpen: boolean, 
+  images: string[], 
+  currentIndex: number, 
+  onClose: () => void,
+  onPrev: () => void,
+  onNext: () => void
+}) => {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowLeft") onPrev();
+      if (e.key === "ArrowRight") onNext();
+    };
+    if (isOpen) window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onPrev, onNext, onClose]);
+
+  if (!isOpen) return null;
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-[1000] flex items-center justify-center bg-brand-navy/95 backdrop-blur-2xl p-4 md:p-10"
+        onClick={onClose}
+      >
+        <button 
+          onClick={onClose}
+          className="absolute top-6 right-6 text-white/60 hover:text-brand-gold transition-colors p-2 z-[1010]"
+        >
+          <X className="w-8 h-8 md:w-10 md:h-10" />
+        </button>
+
+        {images.length > 1 && (
+          <>
+            <button 
+              onClick={(e) => { e.stopPropagation(); onPrev(); }}
+              className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-12 h-12 md:w-16 md:h-16 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-brand-gold hover:bg-brand-gold hover:text-brand-navy transition-all z-[1010]"
+            >
+              <ChevronLeft className="w-6 h-6 md:w-8 md:h-8" />
+            </button>
+            <button 
+              onClick={(e) => { e.stopPropagation(); onNext(); }}
+              className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-12 h-12 md:w-16 md:h-16 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-brand-gold hover:bg-brand-gold hover:text-brand-navy transition-all z-[1010]"
+            >
+              <ChevronRight className="w-6 h-6 md:w-8 md:h-8" />
+            </button>
+          </>
+        )}
+
+        <motion.div 
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.9, opacity: 0 }}
+          transition={{ type: "spring", damping: 25, stiffness: 200 }}
+          className="relative max-w-full max-h-full flex items-center justify-center"
+          onClick={(e) => e.stopPropagation()}
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          onDragEnd={(_, info) => {
+            if (info.offset.x > 100) onPrev();
+            else if (info.offset.x < -100) onNext();
+          }}
+        >
+          <img 
+            src={images[currentIndex]} 
+            alt={`Enlarged view ${currentIndex + 1}`} 
+            className="w-auto h-auto max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl border border-white/10 select-none cursor-grab active:cursor-grabbing"
+            referrerPolicy="no-referrer"
+          />
+          
+          <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 text-white/40 text-[10px] md:text-sm tracking-[0.2em] uppercase font-bold whitespace-nowrap">
+            {currentIndex + 1} / {images.length}
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+};
+
+const JewelleryCarousel = ({ images, title, onImageClick }: { images: string[], title: string, onImageClick?: (index: number) => void }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [direction, setDirection] = useState(0);
@@ -173,7 +263,8 @@ const JewelleryCarousel = ({ images, title }: { images: string[], title: string 
             if (info.offset.x > 50) prevSlide();
             else if (info.offset.x < -50) nextSlide();
           }}
-          className="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"
+          onClick={() => onImageClick?.(currentIndex)}
+          className="absolute inset-0 w-full h-full cursor-pointer md:cursor-zoom-in active:cursor-grabbing"
         >
           <img 
             src={images[currentIndex]} 
@@ -355,7 +446,7 @@ const Navbar = ({ activePage, onPageChange }: { activePage: string, onPageChange
   );
 };
 
-const Hero = ({ onNavigate }: { onNavigate: (page: string, category?: string) => void }) => {
+const Hero = ({ onNavigate, onOpenLightbox }: { onNavigate: (page: string, category?: string) => void, onOpenLightbox: (images: string[], index: number) => void }) => {
   return (
     <section id="home" className="relative min-h-[90vh] flex items-center pt-32 pb-20">
       <div className="container mx-auto px-6 lg:px-12 grid lg:grid-cols-2 gap-16 items-center z-10">
@@ -411,7 +502,8 @@ const Hero = ({ onNavigate }: { onNavigate: (page: string, category?: string) =>
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, delay: 0.2 }}
-          className="relative group w-full max-w-xl mx-auto lg:max-w-none"
+          onClick={() => onOpenLightbox([IMAGES.hero], 0)}
+          className="relative group w-full max-w-xl mx-auto lg:max-w-none cursor-zoom-in"
         >
           <div className="aspect-[4/5] lg:aspect-[3/4] relative overflow-hidden rounded-2xl shadow-[0_30px_100px_rgba(0,0,0,0.6)] border border-white/10 bg-brand-navy">
             <img 
@@ -439,7 +531,7 @@ const Hero = ({ onNavigate }: { onNavigate: (page: string, category?: string) =>
   );
 };
 
-const CollectionsSection = ({ onNavigate }: { onNavigate: (page: string, category?: string) => void }) => {
+const CollectionsSection = ({ onNavigate, onOpenLightbox }: { onNavigate: (page: string, category?: string) => void, onOpenLightbox: (images: string[], index: number) => void }) => {
   return (
     <section id="collections" className="py-32 relative">
       <div className="container mx-auto px-6 lg:px-12">
@@ -468,13 +560,15 @@ const CollectionsSection = ({ onNavigate }: { onNavigate: (page: string, categor
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.2 }}
               viewport={{ once: true }}
-              onClick={(e) => {
-                e.preventDefault();
-                onNavigate('collections', item.id);
-              }}
               className="collection-card relative overflow-hidden group border border-white/10 flex flex-col aspect-[4/5] bg-brand-navy p-4 lg:p-8 cursor-pointer"
             >
-              <div className="absolute inset-0 z-0">
+              <div 
+                className="absolute inset-0 z-0 cursor-zoom-in"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpenLightbox(COLLECTIONS.map(c => c.image), index);
+                }}
+              >
                 <img 
                   src={item.image} 
                   alt={item.title} 
@@ -484,7 +578,13 @@ const CollectionsSection = ({ onNavigate }: { onNavigate: (page: string, categor
                 <div className="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/60 to-transparent" />
               </div>
               
-              <div className="mt-auto z-10">
+              <div 
+                className="mt-auto z-10"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onNavigate('collections', item.id);
+                }}
+              >
                 <p className="text-[10px] uppercase tracking-widest text-brand-gold mb-2">{item.category}</p>
                 <h4 className="text-3xl mb-4 font-serif text-white">{item.title}</h4>
                 <p className="text-xs text-white/60 mb-6 font-light leading-relaxed pr-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
@@ -502,12 +602,15 @@ const CollectionsSection = ({ onNavigate }: { onNavigate: (page: string, categor
   );
 };
 
-const HeritageSection = ({ onNavigate }: { onNavigate: (page: string, category?: string) => void }) => {
+const HeritageSection = ({ onNavigate, onOpenLightbox }: { onNavigate: (page: string, category?: string) => void, onOpenLightbox: (images: string[], index: number) => void }) => {
   return (
     <section id="heritage" className="py-20 lg:py-32 bg-white/5 border-y border-white/5 overflow-hidden">
       <div className="container mx-auto px-6 lg:px-12 flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
         <div className="w-full lg:w-1/2 relative">
-          <div className="relative z-10 border border-brand-gold/20 p-2">
+          <div 
+            className="relative z-10 border border-brand-gold/20 p-2 cursor-zoom-in"
+            onClick={() => onOpenLightbox([IMAGES.heritage], 0)}
+          >
             <img 
               src={IMAGES.heritage} 
               alt="Zaveri Bazaar Mastery" 
@@ -555,7 +658,7 @@ const HeritageSection = ({ onNavigate }: { onNavigate: (page: string, category?:
   );
 };
 
-const B2BPortal = ({ onNavigate }: { onNavigate: (page: string, category?: string) => void }) => {
+const B2BPortal = ({ onNavigate, onOpenLightbox }: { onNavigate: (page: string, category?: string) => void, onOpenLightbox: (images: string[], index: number) => void }) => {
   return (
     <section id="b2b" className="py-20 lg:py-32 relative">
       <div className="container mx-auto px-6 lg:px-12">
@@ -587,7 +690,7 @@ const B2BPortal = ({ onNavigate }: { onNavigate: (page: string, category?: strin
               </button>
             </div>
           </div>
-          <div className="w-full lg:w-1/2 relative min-h-[300px] lg:min-h-[500px]">
+          <div className="w-full lg:w-1/2 relative min-h-[300px] lg:min-h-[500px] cursor-zoom-in" onClick={() => onOpenLightbox([IMAGES.b2b], 0)}>
              <img 
               src={IMAGES.b2b} 
               alt="Export Logistics" 
@@ -608,7 +711,7 @@ const B2BPortal = ({ onNavigate }: { onNavigate: (page: string, category?: strin
   );
 };
 
-const GemstonesJewellerySection = ({ id }: { id?: string }) => {
+const GemstonesJewellerySection = ({ id, onOpenLightbox }: { id?: string, onOpenLightbox: (images: string[], index: number) => void }) => {
   const images = [
     "https://iili.io/Bi6TGNn.md.jpg",
     "https://iili.io/Bi6T19t.md.jpg",
@@ -669,7 +772,8 @@ const GemstonesJewellerySection = ({ id }: { id?: string }) => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: (idx % 6) * 0.1 }}
                 whileHover={{ scale: 1.03 }}
-                className="relative overflow-hidden rounded-[12px] group aspect-square border border-white/10"
+                onClick={() => onOpenLightbox(images, idx)}
+                className="relative overflow-hidden rounded-[12px] group aspect-square border border-white/10 cursor-zoom-in"
               >
                 <img 
                   src={img} 
@@ -925,6 +1029,39 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState("home");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
+  // Lightbox State
+  const [lightbox, setLightbox] = useState<{
+    isOpen: boolean;
+    images: string[];
+    index: number;
+  }>({
+    isOpen: false,
+    images: [],
+    index: 0
+  });
+
+  const openLightbox = (images: string[], index: number) => {
+    setLightbox({ isOpen: true, images, index });
+  };
+
+  const closeLightbox = () => {
+    setLightbox(prev => ({ ...prev, isOpen: false }));
+  };
+
+  const nextLightbox = () => {
+    setLightbox(prev => ({
+      ...prev,
+      index: (prev.index + 1) % prev.images.length
+    }));
+  };
+
+  const prevLightbox = () => {
+    setLightbox(prev => ({
+      ...prev,
+      index: (prev.index - 1 + prev.images.length) % prev.images.length
+    }));
+  };
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const category = params.get('category');
@@ -949,22 +1086,22 @@ export default function App() {
       case "home":
         return (
           <>
-            <Hero onNavigate={handleNavigate} />
-            <CollectionsSection onNavigate={handleNavigate} />
-            <HeritageSection onNavigate={handleNavigate} />
-            <B2BPortal onNavigate={handleNavigate} />
+            <Hero onNavigate={handleNavigate} onOpenLightbox={openLightbox} />
+            <CollectionsSection onNavigate={handleNavigate} onOpenLightbox={openLightbox} />
+            <HeritageSection onNavigate={handleNavigate} onOpenLightbox={openLightbox} />
+            <B2BPortal onNavigate={handleNavigate} onOpenLightbox={openLightbox} />
           </>
         );
       case "collections":
-        return <CollectionsView category={selectedCategory} />;
+        return <CollectionsView category={selectedCategory} onOpenLightbox={openLightbox} />;
       case "gemstones":
-        return <GemstonesView />;
+        return <GemstonesView onOpenLightbox={openLightbox} />;
       case "wholesale":
-        return <WholesaleView />;
+        return <WholesaleView onOpenLightbox={openLightbox} />;
       case "heritage":
         return <HeritageView />;
       default:
-        return <Hero onNavigate={handleNavigate} />;
+        return <Hero onNavigate={handleNavigate} onOpenLightbox={openLightbox} />;
     }
   };
 
@@ -988,13 +1125,22 @@ export default function App() {
       </main>
       <Footer onNavigate={handleNavigate} />
       <StickyActions />
+
+      <Lightbox 
+        isOpen={lightbox.isOpen}
+        images={lightbox.images}
+        currentIndex={lightbox.index}
+        onClose={closeLightbox}
+        onNext={nextLightbox}
+        onPrev={prevLightbox}
+      />
     </div>
   );
 }
 
 // --- Specific Views ---
 
-const CollectionsView = ({ category }: { category: string | null }) => {
+const CollectionsView = ({ category, onOpenLightbox }: { category: string | null, onOpenLightbox: (images: string[], index: number) => void }) => {
   const navgrahaRef = useRef<HTMLDivElement>(null);
   const jewelleryRef = useRef<HTMLDivElement>(null);
   const pearlRef = useRef<HTMLDivElement>(null);
@@ -1097,7 +1243,8 @@ const CollectionsView = ({ category }: { category: string | null }) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
-              className="glass-card p-4 lg:p-6 border-white/5 group hover:border-brand-gold/30 transition-all"
+              onClick={() => onOpenLightbox(NAVGRAHA_STONES.map(s => s.img), i)}
+              className="glass-card p-4 lg:p-6 border-white/5 group hover:border-brand-gold/30 transition-all cursor-zoom-in"
             >
               <div className="aspect-square overflow-hidden mb-6 rounded-lg grayscale group-hover:grayscale-0 transition-all duration-700">
                 <img src={stone.img} alt={stone.name} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
@@ -1127,7 +1274,11 @@ const CollectionsView = ({ category }: { category: string | null }) => {
                 className="group flex flex-col"
               >
                 <div className="overflow-hidden rounded-[12px] border border-white/10 h-[300px] lg:h-[400px] mb-6 relative shadow-2xl">
-                  <JewelleryCarousel images={item.images} title={item.title} />
+                  <JewelleryCarousel 
+                    images={item.images} 
+                    title={item.title} 
+                    onImageClick={(index) => onOpenLightbox(item.images, index)}
+                  />
                 </div>
                 <div className="flex flex-col items-center lg:items-start px-2">
                   <h4 className="text-2xl font-serif text-white group-hover:text-brand-gold transition-colors">{item.title}</h4>
@@ -1139,7 +1290,7 @@ const CollectionsView = ({ category }: { category: string | null }) => {
         </div>
       </section>
 
-      <GemstonesJewellerySection id="gemstones" />
+      <GemstonesJewellerySection id="gemstones" onOpenLightbox={onOpenLightbox} />
 
       {/* Pearl Jewellery Section */}
       <section id="pearl" ref={pearlRef} className="py-20 lg:py-32 bg-brand-navy border-t border-white/5 scroll-mt-24">
@@ -1155,7 +1306,8 @@ const CollectionsView = ({ category }: { category: string | null }) => {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: i * 0.1 }}
-                className="group"
+                onClick={() => onOpenLightbox(pearlJewelleryItems.map(p => p.img), i)}
+                className="group cursor-zoom-in"
               >
                 <div className="overflow-hidden rounded-[12px] border border-white/10 h-[300px] relative">
                   <img 
@@ -1173,7 +1325,7 @@ const CollectionsView = ({ category }: { category: string | null }) => {
   );
 };
 
-const GemstonesView = () => (
+const GemstonesView = ({ onOpenLightbox }: { onOpenLightbox: (images: string[], index: number) => void }) => (
   <div className="pt-32 pb-20">
     {/* Navgraha Gemstones Section */}
     <section id="navgraha-loose" className="py-20 lg:py-32 container mx-auto px-6 lg:px-12 scroll-mt-24">
@@ -1191,7 +1343,8 @@ const GemstonesView = () => (
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
-            className="glass-card p-4 lg:p-6 border-white/5 group hover:border-brand-gold/30 transition-all"
+            onClick={() => onOpenLightbox(NAVGRAHA_STONES.map(s => s.img), i)}
+            className="glass-card p-4 lg:p-6 border-white/5 group hover:border-brand-gold/30 transition-all cursor-zoom-in"
           >
             <div className="aspect-square overflow-hidden mb-6 rounded-lg grayscale group-hover:grayscale-0 transition-all duration-700">
               <img src={stone.img} alt={stone.name} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
@@ -1204,11 +1357,11 @@ const GemstonesView = () => (
     </section>
 
     {/* Gemstones & Jewellery Section */}
-    <GemstonesJewellerySection id="loose-gemstones-jewellery" />
+    <GemstonesJewellerySection id="loose-gemstones-jewellery" onOpenLightbox={onOpenLightbox} />
   </div>
 );
 
-const WholesaleView = () => (
+const WholesaleView = ({ onOpenLightbox }: { onOpenLightbox: (images: string[], index: number) => void }) => (
   <section className="pt-40 pb-20 container mx-auto px-6 lg:px-12">
     <div className="flex flex-col lg:flex-row gap-20 items-center">
       <div className="lg:w-1/2">
@@ -1235,7 +1388,10 @@ const WholesaleView = () => (
         </a>
       </div>
       <div className="lg:w-1/2">
-        <div className="relative p-2 border border-brand-gold/20">
+        <div 
+          className="relative p-2 border border-brand-gold/20 cursor-zoom-in"
+          onClick={() => onOpenLightbox([IMAGES.b2b], 0)}
+        >
           <img src={IMAGES.b2b} alt="B2B Supply" className="w-full aspect-[4/3] object-cover opacity-80" />
         </div>
       </div>
