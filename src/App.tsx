@@ -16,6 +16,7 @@ import {
   Phone, 
   Mail, 
   ChevronRight, 
+  ChevronLeft,
   Menu, 
   X,
   ArrowUpRight,
@@ -44,7 +45,7 @@ const NAVGRAHA_STONES = [
   { name: "Red Coral (Mangal)", planet: "Mars", img: "https://iili.io/BiUsBPn.jpg" },
   { name: "Emerald (Budh)", planet: "Mercury", img: "https://iili.io/BiULg7j.md.webp" },
   { name: "Yellow Sapphire (Guru)", planet: "Jupiter", img: "https://iili.io/BiUZH8b.jpg" },
-  { name: "Diamond (Shukra)", planet: "Venus", img: "https://iili.io/BidZDDN.md.jpg" },
+  { name: "Diamond (Shukra)", planet: "Venus", img: "https://iili.io/Bsshu1I.jpg" },
   { name: "Blue Sapphire (Shani)", planet: "Saturn", img: "https://iili.io/BiUZ4WB.jpg" },
   { name: "Hessonite (Rahu)", planet: "Rahu", img: "https://iili.io/BiggkkN.jpg" },
   { name: "Cat’s Eye (Ketu)", planet: "Ketu", img: "https://iili.io/BigHa87.jpg" },
@@ -106,6 +107,113 @@ const BackgroundAtmosphere = () => (
     <div className="absolute top-1/2 left-1/4 w-[400px] h-[400px] bg-brand-gold/5 rounded-full blur-[180px]" />
   </div>
 );
+
+const JewelleryCarousel = ({ images, title }: { images: string[], title: string }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [direction, setDirection] = useState(0);
+
+  const nextSlide = () => {
+    setDirection(1);
+    setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+  };
+
+  const prevSlide = () => {
+    setDirection(-1);
+    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (!isHovered) {
+      interval = setInterval(nextSlide, 3000);
+    }
+    return () => clearInterval(interval);
+  }, [isHovered, currentIndex]);
+
+  const variants = {
+    enter: (direction: number) => ({
+      x: direction > 0 ? 300 : -300,
+      opacity: 0
+    }),
+    center: {
+      zIndex: 1,
+      x: 0,
+      opacity: 1
+    },
+    exit: (direction: number) => ({
+      zIndex: 0,
+      x: direction < 0 ? 300 : -300,
+      opacity: 0
+    })
+  };
+
+  return (
+    <div 
+      className="relative w-full h-full group/carousel overflow-hidden"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <AnimatePresence initial={false} custom={direction}>
+        <motion.div
+          key={currentIndex}
+          custom={direction}
+          variants={variants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{
+            x: { type: "spring", stiffness: 300, damping: 30 },
+            opacity: { duration: 0.4 }
+          }}
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={1}
+          onDragEnd={(_, info) => {
+            if (info.offset.x > 50) prevSlide();
+            else if (info.offset.x < -50) nextSlide();
+          }}
+          className="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"
+        >
+          <img 
+            src={images[currentIndex]} 
+            alt={`${title} - ${currentIndex + 1}`} 
+            className="w-full h-full object-cover select-none pointer-events-none"
+          />
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Manual Controls */}
+      <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 flex justify-between z-10 pointer-events-none opacity-0 group-hover/carousel:opacity-100 transition-opacity">
+        <button 
+          onClick={(e) => { e.stopPropagation(); prevSlide(); }}
+          className="w-10 h-10 flex items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm border border-white/10 hover:bg-brand-gold/60 transition-all pointer-events-auto"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+        <button 
+          onClick={(e) => { e.stopPropagation(); nextSlide(); }}
+          className="w-10 h-10 flex items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm border border-white/10 hover:bg-brand-gold/60 transition-all pointer-events-auto"
+        >
+          <ChevronRight className="w-5 h-5" />
+        </button>
+      </div>
+
+      {/* Pagination dots */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+        {images.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrentIndex(i)}
+            className={`transition-all duration-300 rounded-full h-1.5 ${
+              i === currentIndex ? "w-6 bg-brand-gold" : "w-1.5 bg-white/40 hover:bg-white/70"
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
 
 const Navbar = ({ activePage, onPageChange }: { activePage: string, onPageChange: (page: string, category?: string) => void }) => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -915,10 +1023,53 @@ const CollectionsView = ({ category }: { category: string | null }) => {
   }, [category]);
 
   const customJewelleryItems = [
-    { title: "Rings", images: ["https://iili.io/Bi4ATVj.jpg", "https://iili.io/Bi4AIob.md.jpg"] },
-    { title: "Bracelets", images: ["https://iili.io/Bi41Kfn.md.jpg", "https://iili.io/Birj8EN.md.jpg"] },
-    { title: "Necklaces", images: ["https://iili.io/Bi4WSl1.md.jpg", "https://iili.io/BiriljV.md.jpg"] },
-    { title: "Pendants", images: ["https://iili.io/BirmCLx.md.jpg", "https://iili.io/Bi4YwEG.md.jpg"] },
+    { 
+      title: "Rings", 
+      images: [
+        "https://iili.io/Bss4Ncb.jpg",
+        "https://iili.io/Bss48NV.md.jpg",
+        "https://iili.io/Bss4vAQ.md.webp",
+        "https://iili.io/Bss4OSj.md.jpg",
+        "https://iili.io/Bss4SDB.jpg",
+        "https://iili.io/Bss4goP.jpg"
+      ] 
+    },
+    { 
+      title: "Bracelets", 
+      images: [
+        "https://iili.io/BsLHDbt.jpg",
+        "https://iili.io/BsLHteI.jpg",
+        "https://iili.io/BsLHQJp.jpg",
+        "https://iili.io/BsLHZ5N.jpg",
+        "https://iili.io/BsLHmzX.jpg",
+        "https://iili.io/BsLHpXn.jpg",
+        "https://iili.io/BsLHyss.jpg",
+        "https://iili.io/BsLJHqG.jpg"
+      ] 
+    },
+    { 
+      title: "Necklaces", 
+      images: [
+        "https://iili.io/BssvvA7.md.webp",
+        "https://iili.io/BssvNcl.md.webp",
+        "https://iili.io/Bssvl8N.jpg",
+        "https://iili.io/BssvEut.jpg"
+      ] 
+    },
+    { 
+      title: "Pendants", 
+      images: [
+        "https://iili.io/BsL28e2.jpg",
+        "https://iili.io/BsL2v5l.jpg",
+        "https://iili.io/BsL2SbS.jpg",
+        "https://iili.io/BsL2kJ4.jpg",
+        "https://iili.io/BsL2rX9.jpg",
+        "https://iili.io/BsL2teV.jpg",
+        "https://iili.io/BsL2DmB.jpg",
+        "https://iili.io/BsL2mzP.jpg",
+        "https://iili.io/BsL3J1a.jpg"
+      ] 
+    },
   ];
 
   const pearlJewelleryItems = [
@@ -970,25 +1121,17 @@ const CollectionsView = ({ category }: { category: string | null }) => {
               <motion.div 
                 key={i}
                 initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
                 className="group flex flex-col"
               >
-                <div className="overflow-hidden rounded-[12px] border border-white/10 h-[300px] mb-6 relative">
-                  <img 
-                    src={item.images[0]} 
-                    alt={item.title} 
-                    className="w-full h-full object-cover transition-opacity duration-700 opacity-80 group-hover:opacity-0" 
-                  />
-                  <img 
-                    src={item.images[1]} 
-                    alt={`${item.title} hover`} 
-                    className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 opacity-0 group-hover:opacity-80" 
-                  />
+                <div className="overflow-hidden rounded-[12px] border border-white/10 h-[300px] lg:h-[400px] mb-6 relative shadow-2xl">
+                  <JewelleryCarousel images={item.images} title={item.title} />
                 </div>
-                <div className="flex flex-col items-center lg:items-start">
-                  <h4 className="text-2xl font-serif text-white">{item.title}</h4>
-                  <div className="w-10 h-[1px] bg-brand-gold mt-3 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform" />
+                <div className="flex flex-col items-center lg:items-start px-2">
+                  <h4 className="text-2xl font-serif text-white group-hover:text-brand-gold transition-colors">{item.title}</h4>
+                  <div className="w-12 h-[1px] bg-brand-gold mt-3 transform origin-left scale-x-50 group-hover:scale-x-100 transition-transform duration-500" />
                 </div>
               </motion.div>
             ))}
